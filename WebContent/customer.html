@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>客户管理数据</title>
+
+<link rel="stylesheet" type="text/css" href="./themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="./themes/icon.css">
+	<script type="text/javascript" src="./js/jquery.min.js"></script>
+	<script type="text/javascript" src="./js/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="./locale/easyui-lang-zh_CN.js"></script>
+	
+<script type="text/javascript">
+	$(function(){
+		$('#dg').datagrid({    
+		    url:'customer_findAll.action',    
+		    columns:[[    
+		        {field:'cust_name',title:'客户名称',width:100},    
+		        {field:'cust_source',title:'客户来源',width:100},    
+		        {field:'cust_level',title:'客户级别',width:100,align:'left'},
+		        {field:'cust_industry',title:'客户行业',width:100},    
+		        {field:'cust_phone',title:'固定电话',width:100},
+		        {field:'cust_mobile',title:'移动电话',width:100},
+		        {field:'xxx',title:'操作',width:100,formatter:function(value,row,index){
+		        	return "<a href='#'>修改</a> | <a href='#' onclick='del("+row.cust_id+")'>删除</a>";
+		       	 }
+		        },
+		    ]],
+		    striped:true,
+		    pagination:true,//分页工具
+		    pageList:[3,5,10], //每页显示数据条数的选择
+		    pageNumber:1,//初始化页数
+		    pageSize:3,
+		    toolbar: [{
+				iconCls: 'icon-add',
+				handler: function(){
+					$("#winAdd").window('open');
+				}
+			}],
+		}); 
+	});
+	
+	function save(){
+		//提交数据到Action
+		$('#formAdd').form('submit', {    
+		    url:"customer_save.action",    	     
+		    success:function(data){    
+				//data是字符串，字符串转为json数据
+				var jsonData = eval("("+data+")");
+				$.messager.show({
+					title:'提示消息',
+					msg:jsonData.msg,
+					timeout:3000,
+					showType:'slide'
+				});
+				//关闭窗口
+				$("#winAdd").window('close');
+				//重新查询
+				$("#dg").datagrid('reload');
+
+		    }    
+		});  
+	
+	}
+	
+	function del(cust_id){
+		alert(cust_id);
+	}
+</script>	
+</head>
+<body>
+	<table id="dg"></table>
+	<div id="winAdd" class="easyui-window" title="My Window" style="width:600px;height:400px"   
+        data-options="iconCls:'icon-save',modal:true,closed:true">   
+	        <form id="formAdd" method="post">
+				<TABLE cellSpacing=0 cellPadding=5  border=0>
+				<TR>
+					<td>客户名称：</td>
+					<td>
+						<INPUT class=textbox id=sChannel2 style="WIDTH: 180px" maxLength=50 name="cust_name">
+					</td>
+					<td>客户级别 ：</td>
+					<td>
+						<INPUT class=textbox id=sChannel2 style="WIDTH: 180px" maxLength=50 name="cust_level">
+					</td>
+				</TR>
+				
+				<TR>
+					<td>信息来源 ：</td>
+					<td>
+						<INPUT class=textbox id=sChannel2 style="WIDTH: 180px" maxLength=50 name="cust_source">
+					</td>
+					<td>客户行业：</td>
+					<td>
+						<INPUT class=textbox id=sChannel2 style="WIDTH: 180px" maxLength=50 name="cust_industry">
+					</td>
+				</TR>
+				
+				<TR>
+					<td>固定电话 ：</td>
+					<td>
+						<INPUT class=textbox id=sChannel2 style="WIDTH: 180px" maxLength=50 name="cust_phone">
+				</td>
+				<td>移动电话 ：</td>
+				<td>
+					<INPUT class=textbox id=sChannel2 style="WIDTH: 180px" maxLength=50 name="cust_mobile">
+						</td>
+					</TR>
+					
+					<tr>
+						<td rowspan=2>
+							<button id="customerBtn" type="button" onclick="save()">保存</button>
+						</td>
+					</tr>
+				</TABLE>   
+			</form>   		     
+	</div>
+	
+</body>
+</html>
